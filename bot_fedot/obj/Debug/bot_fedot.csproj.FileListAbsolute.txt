@@ -1,0 +1,10 @@
+D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.csprojAssemblyReference.cache
+D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.csproj.CoreCompileInputs.cache
+D:\my_bot\bot_fedot\bot_fedot\bin\Debug\bot_fedot.exe.config
+D:\my_bot\bot_fedot\bot_fedot\bin\Debug\bot_fedot.exe
+D:\my_bot\bot_fedot\bot_fedot\bin\Debug\bot_fedot.pdb
+D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.exe
+D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.pdb
+D:\my_bot\bot_fedot\bot_fedot\bin\Debug\Newtonsoft.Json.dll
+D:\my_bot\bot_fedot\bot_fedot\bin\Debug\Newtonsoft.Json.xml
+D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.csproj.CopyComplete
