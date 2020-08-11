@@ -17,29 +17,48 @@ namespace bot_fedot {
 
 		static void Main(string[] args) {
 			ExmoApi api = new ExmoApi(Info.key, Info.secret);
-			
-			bool trade_state_is_sell = false;						//- определяет, что алгоритм работает на продажу (true) или покупку (false) активов
 
-			float purchase_price = 11639.8f;                        //- цена последней покупки актива
+			Console.WriteLine("HI\nEnter the trade state (sell - true, buy - false)");
+			bool trade_state_is_sell;                               //- определяет, что алгоритм работает на продажу (true) или покупку (false) активов
+			trade_state_is_sell = Convert.ToBoolean(Console.ReadLine());
+
+			Console.WriteLine("Enter amount of USDT");
+			float amount_of_usdt;
+			amount_of_usdt = (float)Convert.ToDouble(Console.ReadLine());
+
+			Console.WriteLine("Enter last purchase price");
+			float purchase_price;                                   //- цена последней покупки актива
+			purchase_price = (float)Convert.ToDouble(Console.ReadLine());
 			float calc_selling_price;                               //- расчитываемая минимальная цена продажи (когда актив приобретен)
 			float peak_selling_price = purchase_price;              //- пиковая цена после покупки актива
 			float calc_peak_selling_price;
 
-			float selling_price = 11656f;                           //- цена последней продажи актива
+			Console.WriteLine("Enter last selling price");
+			float selling_price;                                    //- цена последней продажи актива
+			selling_price = (float)Convert.ToDouble(Console.ReadLine());
 			float calc_purchase_price;                              //- расчитываемая минимальная цена покупки (когда актив был продан)
 			float bottom_purchase_price = selling_price;            //- минимальная цена после продажи активов
 			float calc_bottom_purchase_price;
 
 			// percents
 
-			float min_profit_percent = 0.1f;                        //- минимальный процент чистого профита
-			float drop_percent_after_peak = -0.01f;                 //- процент отката после пика (процент, на который должна упасть
+			Console.WriteLine("Percents");
+			Console.WriteLine("Enter minimum profit percent (+)");
+			float min_profit_percent;		                        //- минимальный процент чистого профита
+			min_profit_percent = (float)Convert.ToDouble(Console.ReadLine());
+			Console.WriteLine("Enter drop percent after peak (-)");
+			float drop_percent_after_peak;			                //- процент отката после пика (процент, на который должна упасть
 																	//	пиковая цена перед продажей активов, при условии, что текущая
 																	//	цена больше цены покупки на "min_profit_percent")
+			drop_percent_after_peak = -(float)Convert.ToDouble(Console.ReadLine());
 
-			float min_rollback_percent = -0.05f;                    //- минимальный процент отката после продажи
-			float growth_percent_after_bottom = 0.01f;              //- процент роста после падения (на него возложена амортизирующая
+			Console.WriteLine("Enter minimum rollback percent (-)");
+			float min_rollback_percent;						        //- минимальный процент отката после продажи
+			min_rollback_percent = -(float)Convert.ToDouble(Console.ReadLine());
+			Console.WriteLine("Enter growth percent after bottom (+)");
+			float growth_percent_after_bottom;		                //- процент роста после падения (на него возложена амортизирующая
 																	//	роль, аналогично "drop_percent_after_peak")
+			growth_percent_after_bottom = (float)Convert.ToDouble(Console.ReadLine());
 
 			Currency twin;
 			twin = get_info_pair(api, "BTC_USDT");
@@ -50,7 +69,9 @@ namespace bot_fedot {
 				bottom_purchase_price = twin.sell_price;
 			}
 
-			StreamWriter file = new StreamWriter(@"D:\my_bot\info.txt");
+			Console.WriteLine("Enter the file path");
+			string path = Console.ReadLine();
+			StreamWriter file = new StreamWriter(@path);
 			while (true) {
 				twin = get_info_pair(api, "BTC_USDT");
 
@@ -66,7 +87,7 @@ namespace bot_fedot {
 									selling_price = bottom_purchase_price = twin.buy_price;
 									trade_state_is_sell = false;
 									// sell
-									create_order(api, "BTC_USDT", 100, OrderItems[1]);
+									create_order(api, "BTC_USDT", amount_of_usdt, OrderItems[1]);
 
 									file.WriteLine("SOLD");
 									file.WriteLine($"Selling price = {selling_price}, Peak price was = {peak_selling_price}");
@@ -94,7 +115,7 @@ namespace bot_fedot {
 									purchase_price = peak_selling_price = twin.sell_price;
 									trade_state_is_sell = true;
 									// buy
-									create_order(api, "BTC_USDT", 100, OrderItems[0]);
+									create_order(api, "BTC_USDT", amount_of_usdt, OrderItems[0]);
 
 									file.WriteLine("BOUGHT");
 									file.WriteLine($"Purchase price = {twin.sell_price}, Bottom purchase price = {bottom_purchase_price}");
@@ -111,7 +132,6 @@ namespace bot_fedot {
 					Console.WriteLine($"Selling price = {selling_price}, Calc purchase price = {calc_purchase_price}, Bottom purchase price = {bottom_purchase_price}");
 					Console.WriteLine($"Current rollback = {((twin.sell_price - selling_price) / selling_price) * 100}%, Target is = {min_rollback_percent}%");
 				}
-				//Console.WriteLine($"Price to buy : {twin.sell_price}\t \tPrice to sell : {twin.buy_price}\nPrice to sell plus {percent} percent : {get_num_percent(twin.buy_price, percent)}");
 				Thread.Sleep(1000);
 			}
 		}
