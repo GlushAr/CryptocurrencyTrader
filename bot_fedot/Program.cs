@@ -72,8 +72,22 @@ namespace bot_fedot {
 			Console.WriteLine("Enter the file path");
 			string path = Console.ReadLine();
 			StreamWriter file = new StreamWriter(@path);
+
+			//main loop
 			while (true) {
 				twin = get_info_pair(api, "BTC_USDT");
+
+				if (twin == null) {
+					DateTime begin = DateTime.Now;
+					while (twin == null) {
+						Console.WriteLine("Bad connection");
+						Thread.Sleep(500);
+						twin = get_info_pair(api, "BTC_USDT");
+					}
+					DateTime end = DateTime.Now;
+					file.WriteLine($"{DateTime.Now} - Error of connection, lasting {end - begin}");
+					file.Flush();
+				}
 
 				if (trade_state_is_sell) {
 					calc_selling_price = get_num_percent(purchase_price, min_profit_percent);
@@ -87,9 +101,9 @@ namespace bot_fedot {
 									selling_price = bottom_purchase_price = twin.buy_price;
 									trade_state_is_sell = false;
 									// sell
-									create_order(api, "BTC_USDT", amount_of_usdt, OrderItems[1]);
+									create_order(api, "BTC_USDT", get_num_percent(amount_of_usdt, ((twin.buy_price - purchase_price) / purchase_price) * 100), OrderItems[1]);
 
-									file.WriteLine("SOLD");
+									file.WriteLine($"SOLD, {DateTime.Now}");
 									file.WriteLine($"Selling price = {selling_price}, Peak price was = {peak_selling_price}");
 									file.WriteLine($"Total profit = {((twin.buy_price - purchase_price) / purchase_price) * 100}%, Target was = {min_profit_percent}%\n");
 									file.Flush();
@@ -117,7 +131,7 @@ namespace bot_fedot {
 									// buy
 									create_order(api, "BTC_USDT", amount_of_usdt, OrderItems[0]);
 
-									file.WriteLine("BOUGHT");
+									file.WriteLine($"BOUGHT, {DateTime.Now}");
 									file.WriteLine($"Purchase price = {twin.sell_price}, Bottom purchase price = {bottom_purchase_price}");
 									file.WriteLine($"Total rollback = {((twin.sell_price - selling_price) / selling_price) * 100}%, Target was = {min_rollback_percent}%\n");
 									file.Flush();
@@ -139,10 +153,14 @@ namespace bot_fedot {
 		static Currency get_info_pair(ExmoApi api, string pair) {
 			string result = api.ApiQuery("ticker", new Dictionary<string, string>());
 
-			var deser = JsonConvert.DeserializeObject<Dictionary<string, Currency>>(result);
-			Currency twin = deser[pair];
-
-			return twin;
+			try {
+				var deser = JsonConvert.DeserializeObject<Dictionary<string, Currency>>(result);
+				Currency twin = deser[pair];
+				return twin;
+			} catch (JsonSerializationException ex) {
+				return null;
+			}
+			
 		}
 
 		static Order create_order(ExmoApi api, string pair, float quantity, string type) {
