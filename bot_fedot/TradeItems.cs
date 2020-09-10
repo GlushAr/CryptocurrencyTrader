@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace bot_fedot {
 	class TradeItems {
 		private static int id_count;
-		private static string file_path_;
 
 		public int id { get; private set; }
-		public string owner { get; private set; }												//- владелец текущей торговой единицы
+		public int id_owner { get; private set; }												//- владелец текущей торговой единицы
 		public string pair { get; private set; }												//- валютная пара
 		public float quantity { get; private set; }												//- количество средств, вложенное в актив
 		public bool trade_state_is_sell { get; private set; }                                   //- определяет, что алгоритм работает на продажу (true) или покупку (false) активов
@@ -34,12 +32,12 @@ namespace bot_fedot {
 		public float bottom_purchase_price;				               //- минимальная цена после продажи активов
 		public float calc_bottom_purchase_price;
 
-		public TradeItems(int id, string owner, string pair, float quantity, bool trade_state_is_sell, float last_purchase_price,
+		public TradeItems(int id, int id_owner, string pair, float quantity, bool trade_state_is_sell, float last_purchase_price,
 						  float last_selling_price, float min_profit_percent, float drop_percent_after_peak,
 						  float min_rollback_percent, float growth_percent_after_bottom) {
 			id_count++;
 			this.id = id;
-			this.owner = owner;
+			this.id_owner = id_owner;
 			this.pair = pair;
 			this.quantity = quantity;
 			this.trade_state_is_sell = trade_state_is_sell;
@@ -54,67 +52,29 @@ namespace bot_fedot {
 		public void changeLastPurchasePrice(float last_purchase_price) {
 			this.last_purchase_price = last_purchase_price;
 			this.peak_selling_price = last_purchase_price;
-			trade_state_is_sell = true;
-			string[] arrLine = File.ReadAllLines(file_path_);
-			arrLine[((id - 1) * 12) + 5] = "trade_state_is_sell=true";
-			arrLine[((id - 1) * 12) + 6] = $"last_purchase_price={last_purchase_price}";
-			File.WriteAllLines(file_path_, arrLine);
+			this.trade_state_is_sell = true;
+
+			SqlConn.changeLastPurchase(id, last_purchase_price);
 		}
 
 		public void changeLastSellingPrice(float last_selling_price) {
 			this.last_selling_price = last_selling_price;
 			this.bottom_purchase_price = last_selling_price;
-			trade_state_is_sell = false;
-			string[] arrLine = File.ReadAllLines(file_path_);
-			arrLine[((id - 1) * 12) + 5] = "trade_state_is_sell=false";
-			arrLine[((id - 1) * 12) + 7] = $"last_selling_price={last_selling_price}";
-			File.WriteAllLines(file_path_, arrLine);
+			this.trade_state_is_sell = false;
+
+			SqlConn.changeLastSelling(id, last_selling_price);
 		}
 
-		public static List<TradeItems> initListOfTradeItems(string file_path) {
-			file_path_ = file_path;
+		public static List<TradeItems> initListOfTradeItems() {
+
 			List<TradeItems> trade = new List<TradeItems>();
-
-			using (StreamReader sr = new StreamReader(file_path)) {
-				int id;
-				string owner;
-				string pair;
-				float quantity;
-				bool trade_state_is_sell;
-
-				float last_purchase_price;
-				float last_selling_price;
-
-				float min_profit_percent;
-				float drop_percent_after_peak;
-
-				float min_rollback_percent;
-				float growth_percent_after_bottom;
-
-				while (sr.ReadLine().ToString() == "---") {
-					id = Convert.ToInt32((sr.ReadLine()).Substring(3));
-					owner = (sr.ReadLine()).Substring(6);
-					pair = (sr.ReadLine()).Substring(5);
-					quantity = (float)Convert.ToDouble((sr.ReadLine()).Substring(9));
-					trade_state_is_sell = Convert.ToBoolean((sr.ReadLine()).Substring(20));
-					last_purchase_price = (float)Convert.ToDouble((sr.ReadLine()).Substring(20));
-					last_selling_price = (float)Convert.ToDouble((sr.ReadLine()).Substring(19));
-					min_profit_percent = (float)Convert.ToDouble((sr.ReadLine()).Substring(19));
-					drop_percent_after_peak = (float)Convert.ToDouble((sr.ReadLine()).Substring(24));
-					min_rollback_percent = (float)Convert.ToDouble((sr.ReadLine()).Substring(22));
-					growth_percent_after_bottom = (float)Convert.ToDouble((sr.ReadLine()).Substring(28));
-
-					trade.Add(new TradeItems(id, owner, pair, quantity, trade_state_is_sell, last_purchase_price,
-											 last_selling_price, min_profit_percent, -drop_percent_after_peak,
-											 -min_rollback_percent, growth_percent_after_bottom));
-				}
-			}
+			SqlConn.getListOfTrades(trade);
 			return trade;
 		}
 
 		public void displayInfo() {
 			Console.WriteLine(id);
-			Console.WriteLine(owner);
+			Console.WriteLine(id_owner);
 			Console.WriteLine(pair);
 			Console.WriteLine(quantity);
 			Console.WriteLine(trade_state_is_sell);
