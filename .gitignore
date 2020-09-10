@@ -1,2 +1,6 @@
 .vs/
 bot_fedot/Info.cs
+packages/
+bot_fedot/Properties/
+bot_fedot/bin/
+bot_fedot/obj/
