@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace bot_fedot {
     class Program {
@@ -16,116 +12,106 @@ namespace bot_fedot {
 		};
 
 		static void Main(string[] args) {
+			System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+
+			Console.WriteLine("Enter the server string:");
+			string server = Console.ReadLine(); //"SQLEXPRESS"
+			Console.WriteLine("Enter the database string:");
+			string database = Console.ReadLine(); //"Trades"
+
+			SqlConn.initConnStr($@"Server=.\{server};Database={database}; Integrated Security=true");
+
+			List<TradeItems> trades = TradeItems.initListOfTradeItems();
+
 			ExmoApi api = new ExmoApi(Info.key, Info.secret);
-			
-			bool trade_state_is_sell = false;						//- определяет, что алгоритм работает на продажу (true) или покупку (false) активов
-
-			float purchase_price = 11639.8f;                        //- цена последней покупки актива
-			float calc_selling_price;                               //- расчитываемая минимальная цена продажи (когда актив приобретен)
-			float peak_selling_price = purchase_price;              //- пиковая цена после покупки актива
-			float calc_peak_selling_price;
-
-			float selling_price = 11656f;                           //- цена последней продажи актива
-			float calc_purchase_price;                              //- расчитываемая минимальная цена покупки (когда актив был продан)
-			float bottom_purchase_price = selling_price;            //- минимальная цена после продажи активов
-			float calc_bottom_purchase_price;
-
-			// percents
-
-			float min_profit_percent = 0.1f;                        //- минимальный процент чистого профита
-			float drop_percent_after_peak = -0.01f;                 //- процент отката после пика (процент, на который должна упасть
-																	//	пиковая цена перед продажей активов, при условии, что текущая
-																	//	цена больше цены покупки на "min_profit_percent")
-
-			float min_rollback_percent = -0.05f;                    //- минимальный процент отката после продажи
-			float growth_percent_after_bottom = 0.01f;              //- процент роста после падения (на него возложена амортизирующая
-																	//	роль, аналогично "drop_percent_after_peak")
-
 			Currency twin;
-			twin = get_info_pair(api, "BTC_USDT");
-
-			if (trade_state_is_sell) {
-				peak_selling_price = twin.buy_price;
-			} else {
-				bottom_purchase_price = twin.sell_price;
-			}
-
-			StreamWriter file = new StreamWriter(@"D:\my_bot\info.txt");
-			while (true) {
-				twin = get_info_pair(api, "BTC_USDT");
-
-				if (trade_state_is_sell) {
-					calc_selling_price = get_num_percent(purchase_price, min_profit_percent);
-					if (twin.buy_price > calc_selling_price) {
-						if (twin.buy_price > peak_selling_price) {
-							peak_selling_price = twin.buy_price;
-						} else {
-							calc_peak_selling_price = get_num_percent(peak_selling_price, drop_percent_after_peak);
-							if (twin.buy_price < calc_peak_selling_price) {
-								if (twin.buy_price > calc_selling_price) {
-									selling_price = bottom_purchase_price = twin.buy_price;
-									trade_state_is_sell = false;
-									// sell
-									create_order(api, "BTC_USDT", 100, OrderItems[1]);
-
-									file.WriteLine("SOLD");
-									file.WriteLine($"Selling price = {selling_price}, Peak price was = {peak_selling_price}");
-									file.WriteLine($"Total profit = {((twin.buy_price - purchase_price) / purchase_price) * 100}%, Target was = {min_profit_percent}%\n");
-									file.Flush();
-								}
-							}
-						}
-					}
-					Console.SetCursorPosition(0, 0);
-					Console.Clear();
-					Console.WriteLine("SELL");
-					Console.WriteLine($"Current sell price = {twin.buy_price}");
-					Console.WriteLine($"Purchase price = {purchase_price}, Calc selling price = {calc_selling_price}, Peak selling price = {peak_selling_price}");
-					Console.WriteLine($"Current profit = {((twin.buy_price - purchase_price) / purchase_price) * 100}%, Target is = {min_profit_percent}%");
-				} else {
-					calc_purchase_price = get_num_percent(selling_price, min_rollback_percent);
-					if (twin.sell_price < calc_purchase_price) {
-						if (twin.sell_price < bottom_purchase_price) {
-							bottom_purchase_price = twin.sell_price;
-						} else {
-							calc_bottom_purchase_price = get_num_percent(bottom_purchase_price, growth_percent_after_bottom);
-							if (twin.sell_price > calc_bottom_purchase_price) {
-								if (twin.sell_price < calc_purchase_price) {
-									purchase_price = peak_selling_price = twin.sell_price;
-									trade_state_is_sell = true;
-									// buy
-									create_order(api, "BTC_USDT", 100, OrderItems[0]);
-
-									file.WriteLine("BOUGHT");
-									file.WriteLine($"Purchase price = {twin.sell_price}, Bottom purchase price = {bottom_purchase_price}");
-									file.WriteLine($"Total rollback = {((twin.sell_price - selling_price) / selling_price) * 100}%, Target was = {min_rollback_percent}%\n");
-									file.Flush();
-								}
-							}
-						}
-					}
-					Console.SetCursorPosition(0, 0);
-					Console.Clear();
-					Console.WriteLine("BUY");
-					Console.WriteLine($"Current buy price = {twin.sell_price}");
-					Console.WriteLine($"Selling price = {selling_price}, Calc purchase price = {calc_purchase_price}, Bottom purchase price = {bottom_purchase_price}");
-					Console.WriteLine($"Current rollback = {((twin.sell_price - selling_price) / selling_price) * 100}%, Target is = {min_rollback_percent}%");
-				}
-				//Console.WriteLine($"Price to buy : {twin.sell_price}\t \tPrice to sell : {twin.buy_price}\nPrice to sell plus {percent} percent : {get_num_percent(twin.buy_price, percent)}");
-				Thread.Sleep(1000);
-			}
-		}
-
-		static Currency get_info_pair(ExmoApi api, string pair) {
 			string result = api.ApiQuery("ticker", new Dictionary<string, string>());
 
-			var deser = JsonConvert.DeserializeObject<Dictionary<string, Currency>>(result);
-			Currency twin = deser[pair];
+			foreach (TradeItems trade in trades) {
+				twin = getInfoPair(api, trade.pair, result);
+				if (trade.trade_state_is_sell) {
+					trade.peak_selling_price = twin.buy_price;
+				} else {
+					trade.bottom_purchase_price = twin.sell_price;
+				}
+			}
 
-			return twin;
+			//main loop
+			while (true) {
+				result = api.ApiQuery("ticker", new Dictionary<string, string>());
+				Console.SetCursorPosition(0, 0);
+				Console.Clear();
+				foreach (TradeItems trade in trades) {
+					twin = getInfoPair(api, trade.pair, result);
+
+					if (twin == null) {
+						DateTime begin = DateTime.Now;
+						while (twin == null) {
+							Console.WriteLine("Bad connection");
+							Thread.Sleep(500);
+							result = api.ApiQuery("ticker", new Dictionary<string, string>());
+							twin = getInfoPair(api, trade.pair, result);
+						}
+						DateTime end = DateTime.Now;
+						SqlConn.errorPrint("Error of connection", end - begin);
+					}
+
+					if (trade.trade_state_is_sell) {
+						trade.calc_selling_price = getNumPercent(trade.last_purchase_price, trade.min_profit_percent);
+						if (twin.buy_price > trade.calc_selling_price) {
+							if (twin.buy_price > trade.peak_selling_price) {
+								trade.peak_selling_price = twin.buy_price;
+							} else {
+								trade.calc_peak_selling_price = getNumPercent(trade.peak_selling_price, trade.drop_percent_after_peak);
+								if (twin.buy_price < trade.calc_peak_selling_price) {
+									if (twin.buy_price > trade.calc_selling_price) {
+										// sell
+										createOrder(api, trade.pair, (float)Math.Round(getNumPercent(trade.quantity, ((twin.buy_price - trade.last_purchase_price) / trade.last_purchase_price) * 100), 2) - 0.01f, OrderItems[1]);
+
+										trade.changeLastSellingPrice(twin.buy_price);
+										SqlConn.printLog(twin, trade);
+									}
+								}
+							}
+						}
+						displaySelling(twin, trade);
+					} else {
+						trade.calc_purchase_price = getNumPercent(trade.last_selling_price, trade.min_rollback_percent);
+						if (twin.sell_price < trade.calc_purchase_price) {
+							if (twin.sell_price < trade.bottom_purchase_price) {
+								trade.bottom_purchase_price = twin.sell_price;
+							} else {
+								trade.calc_bottom_purchase_price = getNumPercent(trade.bottom_purchase_price, trade.growth_percent_after_bottom);
+								if (twin.sell_price > trade.calc_bottom_purchase_price) {
+									if (twin.sell_price < trade.calc_purchase_price) {
+										// buy
+										createOrder(api, trade.pair, trade.quantity, OrderItems[0]);
+
+										trade.changeLastPurchasePrice(twin.sell_price);
+										SqlConn.printLog(twin, trade);
+									}
+								}
+							}
+						}
+						displayPurchase(twin, trade);
+					}
+				}
+				Thread.Sleep(600);
+			}
 		}
 
-		static Order create_order(ExmoApi api, string pair, float quantity, string type) {
+		static Currency getInfoPair(ExmoApi api, string pair, string result) {
+			try {
+				var deser = JsonConvert.DeserializeObject<Dictionary<string, Currency>>(result);
+				Currency twin = deser[pair];
+				return twin;
+			} catch (JsonSerializationException ex) {
+				return null;
+			}
+			
+		}
+
+		static Order createOrder(ExmoApi api, string pair, float quantity, string type) {
 			string result = api.ApiQuery("order_create", new Dictionary<string, string> {
 				{ "pair", pair },
 				{ "quantity", quantity.ToString() },
@@ -139,10 +125,28 @@ namespace bot_fedot {
 			return res;
 		}
 
-		static float get_num_percent(float number, float percent) {
+		static float getNumPercent(float number, float percent) {
 			float onePer = number / 100;
 			float res = onePer * percent;
 			return number + res;
 		}
-    }
+
+		static void displaySelling(Currency twin, TradeItems trade) {
+			Console.WriteLine("---");
+			Console.WriteLine("SELL");
+			Console.WriteLine($"Owner id: {trade.id_owner}, pair: {trade.pair}, quantity = {trade.quantity}");
+			Console.WriteLine($"Current sell price = {twin.buy_price}");
+			Console.WriteLine($"Purchase price = {trade.last_purchase_price}, Calc selling price = {trade.calc_selling_price}");
+			Console.WriteLine($"Current profit = {((twin.buy_price - trade.last_purchase_price) / trade.last_purchase_price) * 100}%, Target is = {trade.min_profit_percent}%");
+		}
+
+		static void displayPurchase(Currency twin, TradeItems trade) {
+			Console.WriteLine("---");
+			Console.WriteLine("BUY");
+			Console.WriteLine($"Owner id: {trade.id_owner}, pair: {trade.pair}, quantity = {trade.quantity}");
+			Console.WriteLine($"Current buy price = {twin.sell_price}");
+			Console.WriteLine($"Selling price = {trade.last_selling_price}, Calc purchase price = {trade.calc_purchase_price}");
+			Console.WriteLine($"Current rollback = {((twin.sell_price - trade.last_selling_price) / trade.last_selling_price) * 100}%, Target is = {trade.min_rollback_percent}%");
+		}
+	}
 }

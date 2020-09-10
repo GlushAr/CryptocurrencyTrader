@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="bot_fedot.exe" version="1.0.0.9" publicKeyToken="bdf8ae35f42c8345" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="bot_fedot" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="bot_fedot.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          Параметры манифеста UAC
+          При необходимости изменить уровень контроля учетных записей Windows замените узел 
+          requestedExecutionLevel одним из следующих значений.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         Если вы хотите использовать виртуализацию файлов и реестра для обратной 
+         совместимости, удалите узел requestedExecutionLevel.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="bot_fedot.exe" size="22496">
+      <assemblyIdentity name="bot_fedot" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>gnyra3ftUaubL1J7jUQ5MWC+leVRDMUuzlFAXaMZApA=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Newtonsoft.Json.dll" size="700336">
+      <assemblyIdentity name="Newtonsoft.Json" version="12.0.0.0" publicKeyToken="30AD4FE6B2A6AEED" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>f5ErKKB8Im4L46z7L1fwUFOKugEA+h8L8sOfGh8dqBQ=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="bot_fedot.exe.config" size="189">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>rl5/qDc7Jz+tB+BIbOv9iMGPlRe6YJwrjmU09dnlPcs=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=DESKTOP-P135OS2\Admin" issuerKeyHash="3f1182ea4ec627625489a13949a1743ebb7c110e" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>CebG5NEpd0LH4dZj4MDg2xxqaXuzoDXYJulvSFfy9FE=</DigestValue></Reference></SignedInfo><SignatureValue>ENe/DNhZGu/maogaybn0DNzJENlwDL72AMId9yUXKnIjel8J74TboBsVLu1bx2LMZW5hzisIegdevR7tBgqv7VRtfSoOUoxbqqYKxHwe2GisEN6OEGYSZVyOQ4KpQiP1toY2mPCZnKeRGmkFs9+YjoI/02FUu9NeqUJMVdaZwgQ=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>1peaNpO4KtUQQ4lez6M1UUOv8IPMjQuApw5gxL3M8ii6A+S3kUNrj+OAdLMz2JuWZF8BRPGpB5w+0rOKyA1PHFiPVRLMf3Q2Yd4eWEy+EPY2lUXTkpcenbDnwFqk4lOLhTmZ67y4xu/VnbNeJaMTt/C88zBHT0bs83PoVtK3EXk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="51f4f257486fe926d835a0b37b696a1cdbe0c0e063d6e1c7427729d1e4c6e609" Description="" Url=""><as:assemblyIdentity name="bot_fedot.exe" version="1.0.0.9" publicKeyToken="bdf8ae35f42c8345" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=DESKTOP-P135OS2\Admin</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>S3Zy7T39BSbr5+PIwFKu5+wdsMkTln8rSOsHipdvcCI=</DigestValue></Reference></SignedInfo><SignatureValue>P1e+x7jUXTP3wF+M09CAI71dsh3fmEznO55s6lg8DrAB2/El0LaZbMnge1uGhtyNW+2pyIumzIsch75/zusB/zTxtU1GWQWXdfitpPX6Cw+48T80wbEnszxL9pIncxV2oQGlc936Rw6bS1Gr2dKSEraCgOZBnNDYsIwd+YceG4c=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>1peaNpO4KtUQQ4lez6M1UUOv8IPMjQuApw5gxL3M8ii6A+S3kUNrj+OAdLMz2JuWZF8BRPGpB5w+0rOKyA1PHFiPVRLMf3Q2Yd4eWEy+EPY2lUXTkpcenbDnwFqk4lOLhTmZ67y4xu/VnbNeJaMTt/C88zBHT0bs83PoVtK3EXk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB7TCCAVagAwIBAgIQK5StU6waYalD7Vn782HXGzANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDHioARABFAFMASwBUAE8AUAAtAFAAMQAzADUATwBTADIAXABBAGQAbQBpAG4wHhcNMjAwODExMTA1MDE4WhcNMjEwODExMTY1MDE4WjA1MTMwMQYDVQQDHioARABFAFMASwBUAE8AUAAtAFAAMQAzADUATwBTADIAXABBAGQAbQBpAG4wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANaXmjaTuCrVEEOJXs+jNVFDr/CDzI0LgKcOYMS9zPIougPkt5FDa4/jgHSzM9iblmRfAUTxqQecPtKzisgNTxxYj1USzH90NmHeHlhMvhD2NpVF05KXHp2w58BapOJTi4U5meu8uMbv1Z2zXiWjE7fwvPMwR09G7PNz6FbStxF5AgMBAAEwDQYJKoZIhvcNAQELBQADgYEATO0+zuKkbPeD7VUMQjAfAI32hjMKq7NN+NRbVyugOtfJuJRIiMgJstfscsuepCOKsteR3xQ7cv8bmKu93M7kne40F5jh/FbexUjABX6nyEYvXruntOpK1mTKyiL99fR21LukndY93ep1V+x5gGXgnl/1NMnm4LfUpjCIqWTqM5c=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
