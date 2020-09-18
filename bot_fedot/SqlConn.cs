@@ -14,7 +14,7 @@ namespace bot_fedot {
 			using (SqlConnection connection = new SqlConnection(connection_string)) {
 				connection.Open();
 
-				string queryString = $"UPDATE Table SET Trade_State_Is_Sell = 'True', Last_Purchase_Price = {last_purchase_price}" +
+				string queryString = $"UPDATE Trades SET Trade_State_Is_Sell = 'True', Last_Purchase_Price = {last_purchase_price}" +
 									 $"WHERE Id_Trade = {id}";
 
 				SqlCommand comm = new SqlCommand(queryString, connection);
@@ -27,7 +27,7 @@ namespace bot_fedot {
 			using (SqlConnection connection = new SqlConnection(connection_string)) {
 				connection.Open();
 
-				string queryString = $"UPDATE Table SET Trade_State_Is_Sell = 'False', Last_Selling_Price = {last_selling_price}" +
+				string queryString = $"UPDATE Trades SET Trade_State_Is_Sell = 'False', Last_Selling_Price = {last_selling_price}" +
 									 $"WHERE Id_Trade = {id}";
 
 				SqlCommand comm = new SqlCommand(queryString, connection);
@@ -105,7 +105,7 @@ namespace bot_fedot {
 				float percent = trade.trade_state_is_sell ? ((twin.sell_price - trade.last_selling_price) / trade.last_selling_price) * 100
 														  : ((twin.buy_price - trade.last_purchase_price) / trade.last_purchase_price) * 100;
 
-				string queryString = "INSERT INTO Errors (Id_Trade, Id_Owner, Sold_Bought, Date, Percents)" +
+				string queryString = "INSERT INTO TradesLogs (Id_Trade, Id_Owner, Sold_Bought, Date, Percents)" +
 									$"VALUES({trade.id}, {trade.id_owner}, '{state}', '{DateTime.Now}', {percent})";
 
 				SqlCommand comm = new SqlCommand(queryString, connection);
