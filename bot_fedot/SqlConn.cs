@@ -88,7 +88,7 @@ namespace bot_fedot {
 				connection.Open();
 
 				string queryString = "INSERT INTO Errors (Date, Lasting, Contents)" +
-									$"VALUES('{DateTime.Now}', '{lasting}', '{error_msg}')";
+									$"VALUES('{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}', '{lasting}', '{error_msg.ToString()}')";
 
 				SqlCommand comm = new SqlCommand(queryString, connection);
 				comm.ExecuteNonQuery();

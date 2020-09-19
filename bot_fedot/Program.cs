@@ -12,7 +12,7 @@ namespace bot_fedot {
 		};
 
 		static void Main(string[] args) {
-			System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+			System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("");
 
 			Console.WriteLine("Enter the server string:");
 			string server = Console.ReadLine(); //"SQLEXPRESS"
