@@ -106,7 +106,7 @@ namespace bot_fedot {
 														  : ((twin.buy_price - trade.last_purchase_price) / trade.last_purchase_price) * 100;
 
 				string queryString = "INSERT INTO TradesLogs (Id_Trade, Id_Owner, Sold_Bought, Date, Percents)" +
-									$"VALUES({trade.id}, {trade.id_owner}, '{state}', '{DateTime.Now}', {percent})";
+									$"VALUES({trade.id}, {trade.id_owner}, '{state}', '{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}', {percent})";
 
 				SqlCommand comm = new SqlCommand(queryString, connection);
 				comm.ExecuteNonQuery();
