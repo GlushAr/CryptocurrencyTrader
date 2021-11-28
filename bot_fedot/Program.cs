@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 
 namespace bot_fedot {
     class Program {
+	    	// вынести в Enum
 		static string[] OrderItems = { "market_buy_total",			//- Создание рыночного ордера на покупку BTC на сумму (N) USD
 									   "market_sell_total",			//- Создание рыночного ордера на продажу BTC на сумму (N) долларов США
 									   "market_buy",				//- Создание рыночного ордера на покупку (N) BTC
@@ -25,6 +26,7 @@ namespace bot_fedot {
 
 			ExmoApi api = new ExmoApi(Info.key, Info.secret);
 			Currency twin;
+			// to Enum
 			string result = api.ApiQuery("ticker", new Dictionary<string, string>());
 
 			foreach (TradeItems trade in trades) {
@@ -55,7 +57,7 @@ namespace bot_fedot {
 						DateTime end = DateTime.Now;
 						SqlConn.errorPrint("Error of connection", end - begin);
 					}
-
+					// to method
 					if (trade.trade_state_is_sell) {
 						trade.calc_selling_price = getNumPercent(trade.last_purchase_price, trade.min_profit_percent);
 						if (twin.buy_price > trade.calc_selling_price) {
@@ -96,6 +98,7 @@ namespace bot_fedot {
 						displayPurchase(twin, trade);
 					}
 				}
+				// multithreading
 				Thread.Sleep(600);
 			}
 		}
