@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 
 namespace bot_fedot {
+	// change to postgres
 	static class SqlConn {
 		public static string connection_string { get; private set; }
 
