@@ -77,7 +77,6 @@
   <ItemGroup>
     <Compile Include="Currency.cs" />
     <Compile Include="ExmoApi.cs" />
-    <Compile Include="Info.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

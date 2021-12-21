@@ -24,7 +24,7 @@ namespace bot_fedot {
 
 			List<TradeItems> trades = TradeItems.initListOfTradeItems();
 
-			ExmoApi api = new ExmoApi(Info.key, Info.secret);
+			ExmoApi api = new ExmoApi(SecretInfo.key, SecretInfo.secret);
 			Currency twin;
 			// to Enum
 			string result = api.ApiQuery("ticker", new Dictionary<string, string>());
