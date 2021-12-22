@@ -12,3 +12,8 @@ D:\my_bot\bot_fedot\bot_fedot\bin\Debug\bot_fedot.exe.manifest
 D:\my_bot\bot_fedot\bot_fedot\bin\Debug\bot_fedot.application
 D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.exe.manifest
 D:\my_bot\bot_fedot\bot_fedot\obj\Debug\bot_fedot.application
+D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.csproj.AssemblyReference.cache
+D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.csproj.SuggestedBindingRedirects.cache
+D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.csproj.CoreCompileInputs.cache
+D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.exe
+D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.pdb
