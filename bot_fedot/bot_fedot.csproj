@@ -83,6 +83,7 @@
     <Compile Include="SecretInfo.cs" />
     <Compile Include="SqlConn.cs" />
     <Compile Include="TradeItems.cs" />
+    <Compile Include="SecretInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
