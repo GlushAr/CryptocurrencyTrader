@@ -1,5 +1,5 @@
 .vs/
-bot_fedot/Info.cs
+bot_fedot/utils/SecretInfo.cs
 packages/
 bot_fedot/Properties/
 bot_fedot/bin/
