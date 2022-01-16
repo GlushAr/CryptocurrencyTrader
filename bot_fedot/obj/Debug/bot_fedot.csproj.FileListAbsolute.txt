@@ -17,3 +17,4 @@ D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.csproj.Su
 D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.csproj.CoreCompileInputs.cache
 D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.exe
 D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.pdb
+D:\bot_repo\GlushAr\CryptocurrencyTrader\bot_fedot\obj\Debug\bot_fedot.exe.config

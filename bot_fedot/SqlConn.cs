@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Collections.Generic;
+using Npgsql;
 
 namespace bot_fedot {
-	// change to postgres
+	// database : postgres
 	static class SqlConn {
 		public static string connection_string { get; private set; }
 
@@ -12,26 +13,26 @@ namespace bot_fedot {
 		}
 
 		public static void changeLastPurchase(int id, float last_purchase_price) {
-			using (SqlConnection connection = new SqlConnection(connection_string)) {
+			using (NpgsqlConnection connection = new NpgsqlConnection(connection_string)) {
 				connection.Open();
 
-				string queryString = $"UPDATE Trades SET Trade_State_Is_Sell = 'True', Last_Purchase_Price = {last_purchase_price}" +
-									 $"WHERE Id_Trade = {id}";
+				string queryString = $"UPDATE trades SET trade_ttate_is_sell = 'true', last_purchase_price = {last_purchase_price}" +
+									 $"WHERE id_trade = {id}";
 
-				SqlCommand comm = new SqlCommand(queryString, connection);
+				NpgsqlCommand comm = new NpgsqlCommand(queryString, connection);
 				comm.ExecuteNonQuery();
 				connection.Close();
 			}
 		}
 
 		public static void changeLastSelling(int id, float last_selling_price) {
-			using (SqlConnection connection = new SqlConnection(connection_string)) {
+			using (NpgsqlConnection connection = new NpgsqlConnection(connection_string)) {
 				connection.Open();
 
 				string queryString = $"UPDATE Trades SET Trade_State_Is_Sell = 'False', Last_Selling_Price = {last_selling_price}" +
 									 $"WHERE Id_Trade = {id}";
 
-				SqlCommand comm = new SqlCommand(queryString, connection);
+				NpgsqlCommand comm = new NpgsqlCommand(queryString, connection);
 				comm.ExecuteNonQuery();
 				connection.Close();
 			}
@@ -53,13 +54,13 @@ namespace bot_fedot {
 			float min_rollback_percent;
 			float growth_percent_after_bottom;
 
-			using (SqlConnection connection = new SqlConnection(connection_string)) {
+			using (NpgsqlConnection connection = new NpgsqlConnection(connection_string)) {
 				connection.Open();
 
 				string queryString = "SELECT * FROM Trades";
 
-				SqlCommand comm = new SqlCommand(queryString, connection);
-				SqlDataReader reader = comm.ExecuteReader();
+				NpgsqlCommand comm = new NpgsqlCommand(queryString, connection);
+				NpgsqlDataReader reader = comm.ExecuteReader();
 
 				while (reader.Read()) {
 					short i = 0;
@@ -85,20 +86,20 @@ namespace bot_fedot {
 		}
 
 		public static void errorPrint(string error_msg, TimeSpan lasting) {
-			using (SqlConnection connection = new SqlConnection(connection_string)) {
+			using (NpgsqlConnection connection = new NpgsqlConnection(connection_string)) {
 				connection.Open();
 
-				string queryString = "INSERT INTO Errors (Date, Lasting, Contents)" +
+				string queryString = "INSERT INTO errors (date, lasting, content)" +
 									$"VALUES('{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}', '{lasting}', '{error_msg.ToString()}')";
 
-				SqlCommand comm = new SqlCommand(queryString, connection);
+				NpgsqlCommand comm = new NpgsqlCommand(queryString, connection);
 				comm.ExecuteNonQuery();
 				connection.Close();
 			}
 		}
 
 		public static void printLog(Currency twin, TradeItems trade) {
-			using (SqlConnection connection = new SqlConnection(connection_string)) {
+			using (NpgsqlConnection connection = new NpgsqlConnection(connection_string)) {
 				connection.Open();
 
 				string state = trade.trade_state_is_sell ? "BOUGHT" : "SOLD";
@@ -109,7 +110,7 @@ namespace bot_fedot {
 				string queryString = "INSERT INTO TradesLogs (Id_Trade, Id_Owner, Sold_Bought, Date, Percents)" +
 									$"VALUES({trade.id}, {trade.id_owner}, '{state}', '{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}', {percent})";
 
-				SqlCommand comm = new SqlCommand(queryString, connection);
+				NpgsqlCommand comm = new NpgsqlCommand(queryString, connection);
 				comm.ExecuteNonQuery();
 				connection.Close();
 			}

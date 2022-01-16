@@ -15,12 +15,14 @@ namespace bot_fedot {
 		static void Main(string[] args) {
 			System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("");
 
-			Console.WriteLine("Enter the server string:");
-			string server = Console.ReadLine(); //"SQLEXPRESS"
-			Console.WriteLine("Enter the database string:");
-			string database = Console.ReadLine(); //"Trades"
+			SqlConn.initConnStr("Server=127.0.0.1;Port=5432;UserId=postgres;Password=281199;Database=Trader;");
 
-			SqlConn.initConnStr($@"Server=.\{server};Database={database}; Integrated Security=true");
+			DateTime begin1 = DateTime.Now;
+			Thread.Sleep(10000);
+			DateTime end1 = DateTime.Now;
+			SqlConn.errorPrint("Error of connection", end1 - begin1);
+			return;
+
 
 			List<TradeItems> trades = TradeItems.initListOfTradeItems();
 
